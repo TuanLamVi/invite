@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Thiết Kế Ảnh Cưới - Tuấn Tourist</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700&family=Caveat:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --rose: #d81b60; --gold: #b8860b; --bg: #fff5f7; }
+        
+        body { 
+            font-family: 'Be Vietnam Pro', sans-serif; 
+            background: var(--bg); 
+            margin: 0; padding: 10px; 
+            display: flex; flex-direction: column; align-items: center; 
+        }
+
+        .container { 
+            width: 100%; max-width: 450px; background: white; 
+            border-radius: 20px; padding: 15px; box-sizing: border-box; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+        }
+
+        h1 { font-size: 1.1rem; color: var(--rose); text-align: center; margin: 10px 0; text-transform: uppercase; letter-spacing: 1px; }
+
+        .canvas-wrapper { 
+            width: 100%; background: #eee; border-radius: 12px; 
+            margin-bottom: 15px; overflow: hidden; border: 1px solid #ddd;
+            touch-action: none;
+        }
+        canvas { display: block; width: 100%; height: auto; }
+
+        .ui-panel { display: flex; flex-direction: column; gap: 10px; }
+        .row { display: flex; gap: 8px; }
+        
+        input, select, button { 
+            padding: 12px; border-radius: 10px; border: 1px solid #ddd; 
+            font-size: 16px; outline: none; 
+        }
+
+        input[type="text"] { flex: 1; border: 2px solid var(--rose); }
+        input[type="number"] { width: 70px; text-align: center; }
+
+        .palette { 
+            display: flex; justify-content: space-around; 
+            background: #fef0f3; padding: 8px; border-radius: 10px; 
+        }
+        .color-dot { 
+            width: 30px; height: 30px; border-radius: 50%; 
+            border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            cursor: pointer; 
+        }
+
+        .btn { border: none; font-weight: bold; color: white; cursor: pointer; transition: 0.2s; }
+        .btn-lock { background: #28a745; padding: 14px; width: 100%; border-radius: 10px; }
+        
+        .action-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
+        .btn-download { background: var(--gold); border-radius: 10px; padding: 12px; }
+        .btn-share { background: #007bff; border-radius: 10px; padding: 12px; }
+        .btn-reset { background: #6c757d; font-size: 12px; padding: 8px; margin-top: 10px; border-radius: 8px; }
+
+        .hint { font-size: 11px; color: #888; text-align: center; margin-top: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Ghi Chữ Lên Ảnh Cưới</h1>
+
+    <div class="canvas-wrapper">
+        <canvas id="mainCanvas"></canvas>
+    </div>
+
+    <div class="ui-panel">
+        <div class="row">
+            <input type="text" id="name-input" placeholder="Nhập tên hoặc lời chúc...">
+            <input type="number" id="font-size" value="80">
+        </div>
+
+        <select id="font-family">
+            <option value="'Be Vietnam Pro', sans-serif">1. Font Hiện đại (Be Vietnam)</option>
+            <option value="'Dancing Script', cursive">2. Font Nghệ thuật (Dancing Script)</option>
+            <option value="'Caveat', cursive">3. Font Viết tay (Caveat)</option>
+            <option value="Arial">4. Font Mặc định (Arial)</option>
+        </select>
+
+        <div class="palette" id="color-palette"></div>
+
+        <button class="btn btn-lock" onclick="lockText()">🔒 CHỐT CHỮ & VIẾT TIẾP</button>
+        
+        <div class="action-group">
+            <button class="btn btn-download" onclick="saveImage()">TẢI ẢNH</button>
+            <button class="btn btn-share" onclick="shareSocial()">CHIA SẺ</button>
+        </div>
+        
+        <button class="btn btn-reset" onclick="resetCanvas()">XÓA TẤT CẢ LÀM LẠI</button>
+    </div>
+    <div class="hint">* Chữ sẽ hiển thị cố định ở vị trí trung tâm phía dưới ảnh</div>
+</div>
+
+<script>
+    const canvas = document.getElementById('mainCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // --- CẤU HÌNH CỐ ĐỊNH ---
+    const CONFIG = {
+        // HÃY THAY LINK ẢNH CỦA BẠN VÀO ĐÂY
+        imageUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1000&q=80", 
+        posX: 0.5, // Giữa ngang
+        posY: 0.7  // Gần dưới đáy ảnh (70% từ trên xuống)
+    };
+
+    let bgImg = new Image();
+    let layers = [];
+    let currentColor = "#000000"; // Mặc định MÀU ĐEN
+
+    // Khởi tạo bảng màu
+    const colors = ["#000000", "#ffffff", "#8B0000", "#b8860b", "#E91E63", "#333333"];
+    const palette = document.getElementById('color-palette');
+    colors.forEach(c => {
+        const dot = document.createElement('div');
+        dot.className = 'color-dot';
+        dot.style.backgroundColor = c;
+        dot.onclick = () => { currentColor = c; render(); };
+        palette.appendChild(dot);
+    });
+
+    // Tải ảnh nền
+    bgImg.crossOrigin = "anonymous";
+    bgImg.src = CONFIG.imageUrl;
+    bgImg.onload = () => {
+        canvas.width = bgImg.width;
+        canvas.height = bgImg.height;
+        render();
+    };
+
+    // HÀM VẼ CHÍNH - XỬ LÝ ĐỢI FONT ĐỂ KHÔNG LỖI TIẾNG VIỆT
+    async function render() {
+        // Xóa sạch canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Vẽ ảnh nền
+        if (bgImg.complete) {
+            ctx.drawImage(bgImg, 0, 0);
+        }
+
+        const fontFamily = document.getElementById('font-family').value;
+        const fontSize = document.getElementById('font-size').value;
+
+        // Ép trình duyệt tải Font trước khi vẽ để tránh lỗi mất dấu tiếng Việt
+        try {
+            await document.fonts.load(`${fontSize}px ${fontFamily}`);
+        } catch (e) {}
+
+        // Vẽ các dòng chữ đã khóa
+        layers.forEach(l => {
+            ctx.fillStyle = l.c;
+            ctx.font = `${l.s}px ${l.f}`;
+            ctx.textAlign = "center";
+            ctx.fillText(l.t, l.x, l.y);
+        });
+
+        // Vẽ dòng chữ đang nhập
+        const textVal = document.getElementById('name-input').value;
+        if (textVal) {
+            ctx.fillStyle = currentColor;
+            ctx.font = `${fontSize}px ${fontFamily}`;
+            ctx.textAlign = "center";
+            
+            const x = canvas.width * CONFIG.posX;
+            const y = canvas.height * CONFIG.posY;
+            ctx.fillText(textVal, x, y);
+        }
+    }
+
+    function lockText() {
+        const textVal = document.getElementById('name-input').value;
+        if (!textVal) return;
+        
+        layers.push({
+            t: textVal,
+            s: document.getElementById('font-size').value,
+            f: document.getElementById('font-family').value,
+            c: currentColor,
+            x: canvas.width * CONFIG.posX,
+            y: canvas.height * CONFIG.posY
+        });
+        document.getElementById('name-input').value = "";
+        render();
+    }
+
+    function resetCanvas() {
+        layers = [];
+        document.getElementById('name-input').value = "";
+        render();
+    }
+
+    function saveImage() {
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = 'thiep_moi.png';
+        link.href = dataUrl;
+        link.click();
+    }
+
+    async function shareSocial() {
+        if (!navigator.share) {
+            alert("Trình duyệt không hỗ trợ chia sẻ trực tiếp. Hãy tải ảnh về máy!");
+            return;
+        }
+        try {
+            const dataUrl = canvas.toDataURL('image/png');
+            const blob = await (await fetch(dataUrl)).blob();
+            const file = new File([blob], 'wedding_photo.png', { type: 'image/png' });
+            await navigator.share({
+                files: [file],
+                title: 'Ảnh thiết kế từ Tuấn Tourist',
+                text: 'Mời bạn xem mẫu ảnh của mình!'
+            });
+        } catch (e) { console.log("Hủy"); }
+    }
+
+    // Lắng nghe sự kiện gõ chữ
+    document.getElementById('name-input').addEventListener('input', render);
+    document.getElementById('font-size').addEventListener('input', render);
+    document.getElementById('font-family').addEventListener('change', render);
+
+</script>
+</body>
+</html>
