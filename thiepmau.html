@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Thiệp Mời Online - Bộ Sưu Tập Mẫu Thiệp Đẹp">
+    <meta property="og:description" content="Chọn mẫu thiệp mời sinh nhật, đám cưới, khai trương đẹp nhất và tạo ngay miễn phí">
+    <meta property="og:image" content="https://raw.githubusercontent.com/TuanLamVi/miniweb/main/banner.jpg">
+    
+    <title>Thiệp Mời Online - Chọn Mẫu Thiệp Đẹp</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #e91e63;
+            --accent: #f8c14d;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe4ec 100%);
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://raw.githubusercontent.com/TuanLamVi/miniweb/main/banner.jpg') center/cover;
+            color: white;
+            text-align: center;
+            padding: 80px 20px 60px;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            margin: 0 0 12px 0;
+        }
+        
+        .subtitle {
+            font-size: 1.35rem;
+            margin: 0;
+            opacity: 0.95;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.15);
+            transition: all 0.4s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(233, 30, 99, 0.25);
+        }
+        
+        .card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .card:hover img {
+            transform: scale(1.08);
+        }
+        
+        .card-body {
+            padding: 18px;
+            text-align: center;
+        }
+        
+        .btn-use {
+            display: inline-block;
+            padding: 12px 32px;
+            background: linear-gradient(45deg, var(--primary), #ff4d7e);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 10px;
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .btn-use:hover {
+            transform: scale(1.08);
+            box-shadow: 0 10px 25px rgba(233, 30, 99, 0.4);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 50px 20px;
+            color: #666;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>Thiệp Mời Online</h1>
+            <p class="subtitle">Chọn mẫu thiệp đẹp ngay bên dưới 👇</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 style="text-align:center; margin: 40px 0 20px; color: #e91e63;">
+            📋 Bộ sưu tập mẫu thiệp
+        </h2>
+        
+        <div class="gallery">
+            <div class="card">
+                <img src="https://raw.githubusercontent.com/TuanLamVi/sinhnhat/main/thiepmau1.png" alt="Mẫu thiệp 1">
+                <div class="card-body">
+                    <h3>Mẫu 1</h3>
+                    <a href="https://tuanlamvi.github.io/sinhnhat/" target="_blank" class="btn-use">Dùng mẫu này →</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <img src="https://raw.githubusercontent.com/TuanLamVi/sinhnhat/main/thiepmau2.png" alt="Mẫu thiệp 2">
+                <div class="card-body">
+                    <h3>Mẫu 2</h3>
+                    <a href="https://tuanlamvi.github.io/sinhnhat/" target="_blank" class="btn-use">Dùng mẫu này →</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <img src="https://raw.githubusercontent.com/TuanLamVi/sinhnhat/main/thiepmau3.png" alt="Mẫu thiệp 3">
+                <div class="card-body">
+                    <h3>Mẫu 3</h3>
+                    <a href="https://tuanlamvi.github.io/sinhnhat/" target="_blank" class="btn-use">Dùng mẫu này →</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <img src="https://raw.githubusercontent.com/TuanLamVi/sinhnhat/main/thiepmau4.png" alt="Mẫu thiệp 4">
+                <div class="card-body">
+                    <h3>Mẫu 4</h3>
+                    <a href="https://tuanlamvi.github.io/sinhnhat/" target="_blank" class="btn-use">Dùng mẫu này →</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <img src="https://raw.githubusercontent.com/TuanLamVi/sinhnhat/main/thiepmau5.png" alt="Mẫu thiệp 5">
+                <div class="card-body">
+                    <h3>Mẫu 5</h3>
+                    <a href="https://tuanlamvi.github.io/sinhnhat/" target="_blank" class="btn-use">Dùng mẫu này →</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <img src="https://raw.githubusercontent.com/TuanLamVi/sinhnhat/main/thiepmau6.png" alt="Mẫu thiệp 6">
+                <div class="card-body">
+                    <h3>Mẫu 6</h3>
+                    <a href="https://tuanlamvi.github.io/sinhnhat/" target="_blank" class="btn-use">Dùng mẫu này →</a>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align:center; margin: 60px 0 40px;">
+            <a href="https://tuanlamvi.github.io/sinhnhat/" target="_blank" 
+               style="display: inline-block; padding: 18px 50px; background: linear-gradient(45deg, #e91e63, #ff4d7e); color: white; font-size: 1.4rem; font-weight: bold; border-radius: 50px; text-decoration: none; box-shadow: 0 10px 30px rgba(233,30,99,0.4);">
+                ✨ Tạo Thiệp Mới Từ Đầu
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2026 Thiệp Mời Online - Tạo thiệp đẹp chỉ trong 30 giây 💌<br>
+        Hơn 18.000+ thiệp đã được tạo
+    </div>
+</body>
+</html>
