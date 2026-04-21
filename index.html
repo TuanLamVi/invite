@@ -7,28 +7,176 @@
     <meta property="og:description" content="Tạo thiệp mời sinh nhật, đám cưới, khai trương... Gửi ngay qua Zalo,Facebook, Messenger. Hoàn toàn miễn phí!">
     <meta property="og:image" content="https://raw.githubusercontent.com/TuanLamVi/invite/main/banner.png">
     <meta property="og:url" content="https://tuanlamvi.github.io/invite/">
-    
+   
     <title>Thiệp Mời Online - Tạo Thiệp Đẹp Sang Trọng</title>
-    
+   
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
-    
+   
     <style>
         :root {
-            --primary: #e91e63;     /* Hồng champagne mạnh */
-            --accent: #f8c14d;      /* Vàng ánh kim */
+            --primary: #e91e63; /* Hồng champagne mạnh */
+            --accent: #f8c14d; /* Vàng ánh kim */
             --light: #fff0f5;
         }
-        
+       
         body {
             margin: 0;
             font-family: 'Roboto', sans-serif;
             background: linear-gradient(135deg, #fff0f5 0%, #ffe4ec 100%);
             color: #333;
         }
-        
+
+        /* ==================== NAVIGATION BAR CẢI THIỆN ==================== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 3px solid var(--primary);
+            z-index: 1000;
+            box-shadow: 0 4px 25px rgba(233, 30, 99, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .nav-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 75px;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            font-size: 2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            color: #333;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary);
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .nav-btn {
+            padding: 10px 24px;
+            font-size: 1rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), #ff4d7e);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(233, 30, 99, 0.4);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            color: var(--primary);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        /* Mobile menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 75px;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 25px 20px;
+            z-index: 999;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 14px 0;
+            color: #333;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            .hamburger {
+                display: block;
+            }
+            .nav-content {
+                height: 70px;
+            }
+        }
+
+        /* Các style cũ giữ nguyên */
         .hero {
             min-height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
                         url('https://raw.githubusercontent.com/TuanLamVi/miniweb/main/banner.jpg') center/cover no-repeat;
             display: flex;
             align-items: center;
@@ -36,27 +184,28 @@
             text-align: center;
             color: white;
             position: relative;
+            margin-top: 75px; /* Tránh bị navbar che */
         }
-        
+       
         .container {
             max-width: 1100px;
             margin: 0 auto;
             padding: 0 15px;
         }
-        
+       
         h1 {
             font-family: 'Playfair Display', serif;
             font-size: 3.5rem;
             margin: 0 0 16px 0;
             text-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
-        
+       
         .highlight {
             font-size: 1.4rem;
             margin: 20px 0 40px;
             line-height: 1.5;
         }
-        
+       
         .btn-primary {
             display: inline-block;
             padding: 20px 48px;
@@ -70,12 +219,12 @@
             transition: all 0.4s ease;
             margin: 12px;
         }
-        
+       
         .btn-primary:hover {
             transform: translateY(-10px) scale(1.08);
             box-shadow: 0 18px 40px rgba(233, 30, 99, 0.55);
         }
-        
+       
         .btn-secondary {
             display: inline-block;
             padding: 18px 38px;
@@ -88,12 +237,12 @@
             text-decoration: none;
             transition: all 0.4s ease;
         }
-        
+       
         .btn-secondary:hover {
             background: white;
             color: var(--primary);
         }
-        
+       
         .card {
             background: white;
             border-radius: 24px;
@@ -103,31 +252,118 @@
             box-shadow: 0 15px 45px rgba(233, 30, 99, 0.12);
             transition: all 0.3s ease;
         }
-        
+       
         .card:hover {
             transform: translateY(-12px);
             box-shadow: 0 20px 50px rgba(233, 30, 99, 0.18);
         }
-        
+       
         .features {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 22px;
         }
-        
+       
         .cta-final {
             text-align: center;
             margin: 60px 0 40px;
         }
-        
+
+        /* Footer (giữ nguyên từ phiên bản trước) */
         .footer {
+            background: linear-gradient(to bottom, #fff0f5, #ffe4ec);
+            border-top: 6px solid var(--primary);
+            padding: 55px 20px 40px;
             text-align: center;
-            padding: 50px 20px 30px;
-            color: #666;
-            font-size: 1rem;
+            color: #444;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .footer-content {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .footer-copyright {
+            font-size: 1.05rem;
+            margin-bottom: 28px;
+            opacity: 0.9;
+        }
+
+        .contact-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 22px;
+            background: rgba(255,255,255,0.75);
+            padding: 22px 32px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.12);
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .contact-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 14px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(233, 30, 99, 0.25);
+            color: var(--primary);
+        }
+
+        .zalo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #00a8e8;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(0, 168, 232, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .zalo-link:hover {
+            background: #0095cc;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 28px rgba(0, 168, 232, 0.4);
+        }
+
+        .footer-note {
+            margin-top: 28px;
+            font-size: 0.95rem;
+            opacity: 0.75;
+        }
+
         .firework {
             position: fixed;
             width: 7px;
@@ -136,7 +372,7 @@
             animation: explode 1.3s ease-out forwards;
             z-index: 5;
         }
-        
+       
         @keyframes explode {
             0% { transform: scale(0.3); opacity: 1; }
             100% { transform: scale(8); opacity: 0; }
@@ -144,6 +380,40 @@
     </style>
 </head>
 <body>
+    <!-- NAVIGATION BAR MỚI - ĐẸP & CHUYÊN NGHIỆP -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <!-- Logo -->
+            <a href="https://tuanlamvi.github.io/invite/" class="logo">
+                <span>💌</span>
+                Thiệp Mời Online
+            </a>
+
+            <!-- Menu desktop -->
+            <ul class="nav-menu">
+                <li><a href="https://tuanlamvi.github.io/invite/">Trang chủ</a></li>
+                <li><a href="https://tuanlamvi.github.io/sinhnhat/" target="_blank">Tạo thiệp ngay</a></li>
+                <li><a href="https://tuanlamvi.github.io/AnhThiep/" target="_blank">Xem mẫu thiệp</a></li>
+            </ul>
+
+            <!-- Phần bên phải -->
+            <div class="nav-right">
+                <a href="https://zalo.me/0984062140" target="_blank" class="nav-btn">
+                    💬 Nhắn Zalo
+                </a>
+                <button class="hamburger" id="hamburger">☰</button>
+            </div>
+        </div>
+
+        <!-- Menu mobile -->
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="https://tuanlamvi.github.io/invite/">Trang chủ</a>
+            <a href="https://tuanlamvi.github.io/sinhnhat/" target="_blank">Tạo thiệp ngay</a>
+            <a href="https://tuanlamvi.github.io/AnhThiep/" target="_blank">Xem mẫu thiệp</a>
+            <a href="https://zalo.me/0984062140" target="_blank">Liên hệ Zalo ngay</a>
+        </div>
+    </nav>
+
     <!-- HERO -->
     <section class="hero">
         <div class="container">
@@ -152,7 +422,7 @@
                 Tạo thiệp mời <strong>đẹp - sang - chuyên nghiệp</strong><br>
                 chỉ trong 30 giây. Gửi ngay qua Zalo &amp; Messenger
             </p>
-            
+           
             <div>
                 <a href="https://tuanlamvi.github.io/sinhnhat/" target="_blank" class="btn-primary">
                     ✨ TẠO THIỆP NGAY MIỄN PHÍ
@@ -162,13 +432,12 @@
                     Xem mẫu thiệp →
                 </a>
             </div>
-            
+           
             <p style="margin-top: 35px; font-size: 1.1rem; opacity: 0.95;">
                 Đã có hơn 18.000+ thiệp được tạo • Không cần đăng ký
             </p>
         </div>
     </section>
-
     <div class="container">
         <div class="features">
             <div class="card">
@@ -184,7 +453,6 @@
                 <p>Gửi trực tiếp qua ZALO, FACEBOOK, Messenger..trên điện thoại</p>
             </div>
         </div>
-
         <!-- CTA giữa trang -->
         <div class="cta-final">
             <a href="https://tuanlamvi.github.io/sinhnhat/" target="_blank" class="btn-primary" style="font-size: 1.5rem; padding: 22px 55px;">
@@ -196,11 +464,49 @@
         </div>
     </div>
 
+    <!-- FOOTER (giữ nguyên phiên bản đẹp trước) -->
     <div class="footer">
-        © 2026 Thiệp Mời Online - Tạo thiệp đẹp trong một nốt nhạc 💌
+        <div class="footer-content">
+            <p class="footer-copyright">
+                © 2026 Thiệp Mời Online - Tạo thiệp đẹp trong một nốt nhạc 💌
+            </p>
+
+            <div class="contact-section">
+                <a href="tel:0984062140" class="contact-item">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 19V17.5C21 16.12 19.88 15 18.5 15H17C15.9 15 15 15.9 15 17V19H9V17C9 15.9 8.1 15 7 15H5.5C4.12 15 3 16.12 3 17.5V19" stroke="#e91e63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M15 7C15 5.34 13.66 4 12 4C10.34 4 9 5.34 9 7" stroke="#e91e63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>0984 062 140</span>
+                </a>
+
+                <a href="https://zalo.me/0984062140" target="_blank" class="zalo-link">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="24" height="24" rx="6" fill="#ffffff"/>
+                        <rect width="24" height="24" rx="6" fill="#00a8e8"/>
+                        <text x="12" y="17.5" font-family="Arial Black, sans-serif" font-size="15" font-weight="900" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">Z</text>
+                    </svg>
+                    Nhắn Zalo ngay
+                </a>
+            </div>
+
+            <p class="footer-note">
+                Hỗ trợ nhanh 24/7 • Gọi hoặc nhắn tin bất cứ lúc nào
+            </p>
+        </div>
     </div>
 
     <script>
+        // Hamburger menu
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            hamburger.textContent = mobileMenu.classList.contains('active') ? '✕' : '☰';
+        });
+
+        // Firework giữ nguyên
         function createFirework() {
             const colors = ['#e91e63', '#f8c14d', '#ff8ab3', '#ffffff'];
             const fw = document.createElement("div");
@@ -211,7 +517,7 @@
             document.body.appendChild(fw);
             setTimeout(() => fw.remove(), 1300);
         }
-        
+       
         setInterval(() => {
             if (Math.random() > 0.35) createFirework();
         }, 250);
