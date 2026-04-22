@@ -249,18 +249,18 @@
           
             <div class="popup" id="popup">
                 <div class="popup-header">
-                    <div class="popup-title">✏️ Chỉnh sửa thiệp</div>
+                    <div class="popup-title">✏️ Ghi tên khách mời</div>
                     <button class="close-btn" onclick="hidePopup()">×</button>
                 </div>
               
                 <div class="section">
                     <label class="section-label">NỘI DUNG 1 (vị trí 1)</label>
-                    <input type="text" id="text1" placeholder="Nhập nội dung dòng 1...">
+                    <input type="text" id="text1" placeholder="vd: Gđ Bác Tám Tuyến...">
                 </div>
               
                 <div class="section">
                     <label class="section-label">NỘI DUNG 2 (vị trí 2)</label>
-                    <input type="text" id="text2" placeholder="Nhập nội dung dòng 2...">
+                    <input type="text" id="text2" placeholder="vd Gia đình Bác...">
                 </div>
               
                 <div class="section">
@@ -277,8 +277,8 @@
                 <div class="section">
                     <label class="section-label">KÍCH THƯỚC CHỮ</label>
                     <div class="size-slider">
-                        <input type="range" id="size" min="40" max="280" value="120" step="2">
-                        <span id="size-value">120</span>
+                        <input type="range" id="size" min="20" max="80" value="25" step="2">
+                        <span id="size-value">25</span>
                     </div>
                 </div>
               
@@ -294,7 +294,7 @@
             </div>
         </div>
       
-        <input type="text" placeholder="Bấm vào đây để chỉnh 2 nội dung thiệp..."
+        <input type="text" placeholder="Bấm vào đây để chỉnh nội dung thiệp..."
                onclick="showPopup()" style="margin-top:12px; text-align:center; font-size:15px;">
         
         <!-- FOOTER -->
@@ -338,8 +338,8 @@
 
         const CONFIG = {
             imageUrl: "https://raw.githubusercontent.com/TuanLamVi/invite/main/tangia/mungtangia.png",
-            fixedY1: 0.152,   // ← Vị trí dòng 1 (giữ nguyên như cũ)
-            fixedY2: 0.42     // ← Vị trí dòng 2 (bạn chỉnh số này để thay đổi vị trí)
+            fixedY1: 0.48,   // ← Vị trí dòng 1 (giữ nguyên như cũ)
+            fixedY2: 0.655     // ← Vị trí dòng 2 (bạn chỉnh số này để thay đổi vị trí)
         };
 
         let img = new Image();
@@ -382,11 +382,11 @@
 
                 if (text1) {
                     const y1 = canvas.height * CONFIG.fixedY1;
-                    ctx.fillText(text1, canvas.width * 0.5, y1);
+                    ctx.fillText(text1, canvas.width * 0.75, y1);
                 }
                 if (text2) {
                     const y2 = canvas.height * CONFIG.fixedY2;
-                    ctx.fillText(text2, canvas.width * 0.5, y2);
+                    ctx.fillText(text2, canvas.width * 0.75, y2);
                 }
 
                 ctx.shadowBlur = 0;
