@@ -198,7 +198,7 @@
         </div>
         
         <div class="action-group">
-            <button class="btn btn-download" onclick="save()">📥 LƯU ẢNH</button>
+            <button class="btn btn-download" onclick="save()">📥 LƯU THIỆP</button>
             <button class="btn btn-share" onclick="share()">📤 GỬI THIỆP</button>
         </div>
     </div>
@@ -300,7 +300,7 @@
         }
 
         async function share() {
-            if (!navigator.share) return alert("Trình duyệt không hỗ trợ Vui lòng bấm nút 3 chấm trên cùng bên phải, chọn " Mở bằng trình duyệt"  " .");
+            if (!navigator.share) return alert("Trình duyệt không hỗ trợ Vui lòng bấm nút 3 chấm trên cùng bên phải, chọn " Mở bằng trình duyệt".");
             try {
                 const fileName = generateFileName();
                 const blob = await (await fetch(canvas.toDataURL("image/png"))).blob();
