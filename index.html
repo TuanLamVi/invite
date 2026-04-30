@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GỬI THIỆP ONLINE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Dancing+Script&family=Caveat&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --pink1: #ff9a9e; --pink3: #fbc2eb; }
+        body { font-family: 'Be Vietnam Pro', sans-serif; margin: 0; background: linear-gradient(135deg, var(--pink1), var(--pink3)); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px 10px; box-sizing: border-box; }
+        
+        .container { width: 100%; max-width: 420px; background: white; border-radius: 22px; padding: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); position: relative; margin-bottom: 20px; }
+        .canvas-wrapper { position: relative; }
+        canvas { width: 100%; border-radius: 14px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        .popup { position: absolute; bottom: 12px; left: 12px; right: 12px; background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(15px); border-radius: 16px; padding: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); display: none; z-index: 20; border: 1px solid rgba(255,255,255,0.6); }
+        .popup.active { bottom: 62px; }
+        .popup-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .popup-title { font-size: 15px; font-weight: 700; color: #e91e63; }
+        .close-btn { width: 34px; height: 34px; border: none; background: #ff1744; color: white; border-radius: 50%; font-size: 22px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(255,23,68,0.3); }
+        
+        .section { margin-bottom: 8px; }
+        .section-label { font-size: 11.5px; font-weight: 700; color: #e91e63; margin-bottom: 4px; display: block; }
+        
+        .input-group { position: relative; display: flex; align-items: center; }
+        .input-group input { width: 100%; padding: 10px 35px 10px 12px; border-radius: 11px; border: 2px solid #f8c4d0; font-size: 15px; outline: none; box-sizing: border-box; font-family: inherit; }
+        .input-group input:focus { border-color: #e91e63; }
+        .clear-btn { position: absolute; right: 10px; background: #ccc; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
+        .clear-btn:hover { background: #ff1744; }
+
+        select { width: 100%; padding: 10px 12px; border-radius: 11px; border: 2px solid #f8c4d0; font-size: 15px; outline: none; box-sizing: border-box; }
+        
+        .size-slider { background: rgba(255,255,255,0.8); padding: 8px 12px; border-radius: 11px; display: flex; align-items: center; gap: 10px; }
+        .size-slider input[type="range"] { flex: 1; accent-color: #e91e63; }
+        #size-value { font-weight: 700; font-size: 15px; min-width: 36px; text-align: center; color: #e91e63; }
+        
+        .palette { display: flex; justify-content: space-around; margin: 6px 0; }
+        .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+        
+        .action-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+        .btn-full { grid-column: span 2; background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; padding: 12px; border-radius: 11px; border: none; font-weight: bold; font-size: 14.5px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3); }
+        .btn-download { background: #ff758c; color: white; padding: 11px; border-radius: 11px; border: none; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .btn-share { background: #36d1dc; color: white; padding: 11px; border-radius: 11px; border: none; font-weight: bold; font-size: 14px; cursor: pointer; }
+        
+        /* KHOẢNG DANH SÁCH KHÁCH MỜI */
+        .guest-container { width: 100%; max-width: 420px; background: white; border-radius: 22px; padding: 20px 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: none; margin-bottom: 20px; box-sizing: border-box; }
+        .guest-header { font-size: 16px; font-weight: bold; color: #e91e63; margin-bottom: 15px; text-align: center; border-bottom: 2px dashed #fbc2eb; padding-bottom: 10px; }
+        
+        .guest-item { background: #fff0f5; padding: 15px; border-radius: 14px; border: 1px solid #fbc2eb; margin-bottom: 12px; }
+        .guest-name-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .guest-name-text { font-size: 17px; font-weight: bold; color: #d81b60; margin-bottom: 5px; }
+        .guest-status { font-size: 13px; display: flex; align-items: center; gap: 5px; color: #555; }
+        .guest-small-actions { display: flex; gap: 5px; }
+        .btn-edit-guest { background: #ff9800; color: white; border: none; border-radius: 6px; padding: 5px 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .btn-delete-guest { background: #f44336; color: white; border: none; border-radius: 6px; padding: 5px 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        
+        .guest-note { width: 100%; padding: 8px 12px; border: 1px solid #fbc2eb; border-radius: 8px; margin-bottom: 12px; box-sizing: border-box; font-family: inherit; font-size: 14px; }
+        .guest-actions { display: flex; gap: 8px; }
+        .btn-send-guest { flex: 1; background: #36d1dc; color: white; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;}
+        .btn-save-note { background: #e91e63; color: white; padding: 10px 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        
+        .pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+        .page-btn { background: white; border: 2px solid #e91e63; color: #e91e63; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .page-btn:disabled { border-color: #ccc; color: #ccc; cursor: not-allowed; }
+        .page-info { font-weight: bold; color: #666; font-size: 14px; }
+
+        /* FOOTER NẰM ĐỘC LẬP DƯỚI CÙNG */
+        .footer-wrapper { width: 100%; max-width: 420px; }
+        .contact-footer { padding: 20px 18px; background: linear-gradient(135deg, #fff0f5, #ffe4f0); border-radius: 20px; border: 3px solid #ff9a9e; box-shadow: 0 8px 25px rgba(233, 30, 99, 0.22); text-align: center; }
+        .contact-title { font-size: 14px; font-weight: 700; color: #e91e63; margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; letter-spacing: 0.6px; }
+        .contact-row { display: flex; gap: 12px; justify-content: center; }
+        .contact-btn { flex: 1; background: white; border-radius: 16px; padding: 14px 12px; display: flex; align-items: center; gap: 12px; text-decoration: none; color: #e91e63; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); border: 2px solid #f8c4d0; }
+        .contact-btn:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 25px rgba(233, 30, 99, 0.3); border-color: #ff9a9e; }
+        .contact-btn .icon { font-size: 32px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(233, 30, 99, 0.2)); }
+        .contact-btn div { text-align: left; }
+        .contact-btn .label { font-size: 12.5px; font-weight: 600; opacity: 0.85; line-height: 1; }
+        .contact-btn .number { font-size: 17px; font-weight: 700; line-height: 1.2; margin-top: 2px; }
+        .contact-support { margin-top: 16px; font-size: 13px; color: #e91e63; opacity: 0.9; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 4px; }
+
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; }
+        .loader-spin { border: 4px solid #fbc2eb; border-top: 4px solid #e91e63; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 10px;}
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div id="loader">
+        <div class="loader-spin"></div>
+        <div style="color:#e91e63; font-weight:bold; font-size: 15px;" id="loaderText">Đang chuẩn bị thiệp...</div>
+    </div>
+
+    <div class="container">
+        <div class="canvas-wrapper" id="wrapper">
+            <canvas id="canvas"></canvas>
+          
+            <div class="popup" id="popup">
+                <div class="popup-header">
+                    <div class="popup-title">✏️ Chỉnh sửa thiệp</div>
+                    <button class="close-btn" onclick="hidePopup()">×</button>
+                </div>
+                
+                <div class="section">
+                    <label class="section-label">NỘI DUNG</label>
+                    <div class="input-group">
+                        <input type="text" id="text" placeholder="Nhập tên khách mời...">
+                        <button class="clear-btn" onclick="clearText()" title="Xóa tên">X</button>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <label class="section-label">KIỂU CHỮ</label>
+                    <select id="font">
+                        <option value="'Great Vibes'">Great Vibes - Sang trọng</option>
+                        <option value="'Dancing Script'">Dancing Script</option>
+                        <option value="'Caveat'">Caveat - Viết tay</option>
+                        <option value="'Be Vietnam Pro'">Be Vietnam Pro</option>
+                        <option value="Arial">Arial</option>
+                    </select>
+                </div>
+                
+                <div class="section">
+                    <label class="section-label">KÍCH THƯỚC CHỮ</label>
+                    <div class="size-slider">
+                        <input type="range" id="size" min="40" max="280" value="80" step="2">
+                        <span id="size-value">80</span>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <label class="section-label">MÀU CHỮ</label>
+                    <div class="palette" id="palette"></div>
+                </div>
+                
+                <div class="action-group">
+                    <button class="btn-download" onclick="save()">📥 TẢI VỀ</button>
+                    <button class="btn-share" onclick="share()">📤 GỬI</button>
+                    <button class="btn-full" onclick="saveToGuestList()">💾 LƯU VÀO DANH SÁCH</button>
+                </div>
+            </div>
+        </div>
+      
+        <input type="text" placeholder="Bấm vào đây để chỉnh nội dung thiệp..."
+               onclick="showPopup()" style="margin-top:12px; text-align:center; font-size:15px; width: 100%; padding: 12px; border-radius: 12px; border: 2px dashed #fbc2eb; outline: none; box-sizing: border-box;">
+    </div>
+
+    <!-- KHU VỰC QUẢN LÝ DANH SÁCH -->
+    <div class="guest-container" id="guestContainer">
+        <div class="guest-header">📋 DANH SÁCH KHÁCH MỜI</div>
+        <div id="guestListRender"></div>
+        <div class="pagination">
+            <button class="page-btn" id="prevBtn" onclick="changePage(-1)">⬅️ Trước</button>
+            <div class="page-info" id="pageInfo">1 / 1</div>
+            <button class="page-btn" id="nextBtn" onclick="changePage(1)">Sau ➡️</button>
+        </div>
+    </div>
+
+    <div class="footer-wrapper">
+        <div class="contact-footer">
+            <div class="contact-title">❤️ Liên hệ hỗ trợ ngay</div>
+            <div class="contact-row">
+                <a href="tel:0984062140" class="contact-btn">
+                    <span class="icon">📱</span>
+                    <div><span class="label">Hotline</span><strong class="number">0984 062 140</strong></div>
+                </a>
+                <a href="https://zalo.me/0984062140" target="_blank" class="contact-btn" rel="noopener">
+                    <span class="icon">💬</span>
+                    <div><span class="label">Zalo</span><strong class="number">0984 062 140</strong></div>
+                </a>
+            </div>
+            <div class="contact-support">Hỗ trợ 24/7 • Tạo thiệp chỉ trong 10 giây ✨</div>
+        </div>
+    </div>
+
+    <script>
+        // === DÁN LINK API MỚI NHẤT VÀO ĐÂY ===
+        const API_URL = "https://script.google.com/macros/s/AKfycbwdNAlml4J8I5ijGW8IbuEZafUrxROye4f5bE7c2KL25GQ12l-TTQvsdQlSfXXQ9d-YXQ/exec";
+
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const popup = document.getElementById("popup");
+        const wrapper = document.getElementById("wrapper");
+        const textInput = document.getElementById("text");
+        const sizeSlider = document.getElementById("size");
+        const sizeValue = document.getElementById("size-value");
+        const fontSelect = document.getElementById("font");
+        const palette = document.getElementById("palette");
+
+        let activeConfig = { imageUrl: "https://raw.githubusercontent.com/TuanLamVi/sinhnhat/main/thiepmau7.png", textPosition: { x: 0.5, y: 0.152 }, defaultFontSize: 80 };
+        let img = new Image(); img.crossOrigin = "anonymous";
+        
+        let guestList = [];
+        let currentPage = 1; 
+        const itemsPerPage = 10; 
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const templateId = urlParams.get('id');
+
+        if (templateId) {
+            fetch(API_URL + "?action=read&id=" + templateId, { redirect: "follow" })
+                .then(res => res.text())
+                .then(text => {
+                    let data;
+                    try { data = JSON.parse(text); } catch (e) {
+                        alert("⚠️ Lỗi bảo mật: Hãy kiểm tra lại Google Apps Script.");
+                        initCanvas(); return;
+                    }
+                    if (data.error) { initCanvas(); return; }
+                    if (data.endDate) {
+                        let end = new Date(data.endDate);
+                        end.setHours(23, 59, 59);
+                        if (new Date() > end) {
+                            document.body.innerHTML = "<div style='color:white; text-align:center; padding: 40px; font-family: sans-serif;'><h2 style='font-size: 24px; margin-bottom: 10px;'>⚠️ Xin lỗi, thiệp mời đã hết hạn!</h2><p>Sự kiện này đã kết thúc. Vui lòng liên hệ người gửi nếu có sai sót.</p></div>";
+                            return; 
+                        }
+                    }
+                    activeConfig = { imageUrl: data.imageUrl, textPosition: { x: parseFloat(data.x), y: parseFloat(data.y) }, defaultFontSize: parseInt(data.fontSize) || 80 };
+                    initCanvas();
+                    fetchGuestList(); 
+                }).catch(err => { initCanvas(); });
+        } else {
+            initCanvas(); 
+        }
+
+        function initCanvas() {
+            sizeSlider.value = activeConfig.defaultFontSize;
+            sizeValue.textContent = activeConfig.defaultFontSize;
+            img.src = activeConfig.imageUrl;
+            img.onload = () => {
+                canvas.width = img.width; canvas.height = img.height;
+                draw();
+                document.getElementById('loader').style.display = 'none';
+            };
+            img.onerror = () => { document.getElementById('loader').style.display = 'none'; }
+        }
+
+        let currentColor = "#000000";
+        const colors = ["#000000", "#e91e63", "#9c27b0", "#3f51b5", "#d81b60", "#ff5722", "#ffffff"];
+        colors.forEach(c => {
+            let d = document.createElement("div"); d.className = "color-dot"; d.style.background = c;
+            d.onclick = () => { currentColor = c; draw(); }; palette.appendChild(d);
+        });
+
+        function clearText() { textInput.value = ""; draw(); textInput.focus(); }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+            const text = textInput.value.trim();
+            if (text) {
+                const fontSize = parseFloat(sizeSlider.value);
+                ctx.fillStyle = currentColor; ctx.font = `${fontSize}px ${fontSelect.value}`;
+                ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+                const textX = canvas.width * activeConfig.textPosition.x;
+                const textY = canvas.height * activeConfig.textPosition.y;
+                ctx.shadowColor = "rgba(0,0,0,0.45)"; ctx.shadowBlur = 10; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
+                ctx.fillText(text, textX, textY);
+                ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+            }
+        }
+
+        sizeSlider.addEventListener("input", () => { sizeValue.textContent = sizeSlider.value; draw(); });
+        textInput.addEventListener("input", draw);
+        fontSelect.addEventListener("change", draw);
+        function showPopup() { popup.style.display = "block"; setTimeout(() => popup.classList.add("active"), 10); }
+        function hidePopup() { popup.classList.remove("active"); setTimeout(() => { popup.style.display = "none"; }, 300); }
+        wrapper.addEventListener("click", (e) => { if (e.target === wrapper || e.target === canvas) hidePopup(); });
+
+        async function fetchGuestList() {
+            if(!templateId) return;
+            try {
+                let res = await fetch(API_URL + "?action=getGuests&inviteId=" + templateId);
+                let data = await res.json();
+                guestList = data.reverse(); 
+                if(guestList.length > 0) {
+                    document.getElementById('guestContainer').style.display = 'block';
+                    currentPage = 1; renderGuest();
+                } else {
+                    document.getElementById('guestContainer').style.display = 'none';
+                }
+            } catch(e) {}
+        }
+
+        function saveToGuestList() {
+            if(!templateId) return alert("Vui lòng tải thiệp từ trang quản trị (có ID) để dùng tính năng này!");
+            const name = textInput.value.trim();
+            if(!name) return alert("Vui lòng nhập tên khách mời trước khi lưu!");
+
+            const newGuestId = Date.now().toString();
+            const payload = { action: 'saveGuest', guestId: newGuestId, inviteId: templateId, guestName: name, note: "" };
+
+            guestList.unshift({ guestId: newGuestId, inviteId: templateId, guestName: name, note: "", status: 0, createdAt: new Date().toLocaleString("vi-VN") });
+            
+            document.getElementById('guestContainer').style.display = 'block';
+            currentPage = 1; 
+            renderGuest();
+            clearText(); 
+
+            const formData = new URLSearchParams();
+            formData.append("data", JSON.stringify(payload));
+            fetch(API_URL, { method: 'POST', body: formData }).catch(e => console.log("Lỗi mạng"));
+        }
+
+        // TÍNH NĂNG XÓA KHÁCH MỜI
+        function deleteGuest(guestId, index) {
+            if(confirm("Bạn có chắc chắn muốn xóa khách mời này?")) {
+                guestList.splice(index, 1); // Xóa khỏi bộ nhớ ngay lập tức
+                
+                // Nếu xóa hết người ở trang hiện tại thì lùi lại 1 trang
+                const totalPages = Math.ceil(guestList.length / itemsPerPage);
+                if (currentPage > totalPages && currentPage > 1) currentPage--;
+                
+                if(guestList.length === 0) document.getElementById('guestContainer').style.display = 'none';
+                else renderGuest();
+
+                // Lưu ngầm lệnh xóa lên Google Sheet
+                const payload = { action: 'deleteGuest', guestId: guestId };
+                const formData = new URLSearchParams();
+                formData.append("data", JSON.stringify(payload));
+                fetch(API_URL, { method: 'POST', body: formData }).catch(e => console.log("Lỗi mạng"));
+            }
+        }
+
+        // TÍNH NĂNG SỬA TÊN KHÁCH MỜI
+        function editGuestName(guestId, index) {
+            const currentName = guestList[index].guestName;
+            const newName = prompt("Sửa tên khách mời:", currentName);
+            
+            if (newName && newName.trim() !== "" && newName !== currentName) {
+                guestList[index].guestName = newName.trim();
+                renderGuest(); // Cập nhật chữ trên màn hình ngay
+
+                // Lưu ngầm lên Google Sheet
+                const payload = { action: 'updateGuest', guestId: guestId, guestName: newName.trim() };
+                const formData = new URLSearchParams();
+                formData.append("data", JSON.stringify(payload));
+                fetch(API_URL, { method: 'POST', body: formData }).catch(e => console.log("Lỗi mạng"));
+            }
+        }
+
+        function updateGuestData(guestId, note, status) {
+            const payload = { action: 'updateGuest', guestId: guestId };
+            if(note !== null) payload.note = note;
+            if(status !== null) payload.status = status;
+
+            const formData = new URLSearchParams();
+            formData.append("data", JSON.stringify(payload));
+            fetch(API_URL, { method: 'POST', body: formData }).catch(e => console.log("Lỗi mạng"));
+        }
+
+        function saveNote(guestId, index) {
+            const noteVal = document.getElementById('note_' + guestId).value;
+            guestList[index].note = noteVal;
+            updateGuestData(guestId, noteVal, null);
+            
+            const btn = event.target;
+            const oldText = btn.innerText; const oldBg = btn.style.background;
+            btn.innerText = "✓ Đã lưu"; btn.style.background = "#4CAF50";
+            setTimeout(() => { btn.innerText = oldText; btn.style.background = oldBg; }, 1200); 
+        }
+
+        function renderGuest() {
+            if(guestList.length === 0) return;
+            const container = document.getElementById('guestListRender');
+            container.innerHTML = ''; 
+
+            const totalPages = Math.ceil(guestList.length / itemsPerPage);
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, guestList.length);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                const guest = guestList[i];
+                const isSent = guest.status == 1;
+
+                container.innerHTML += `
+                    <div class="guest-item">
+                        <div class="guest-name-row">
+                            <div style="flex: 1;">
+                                <div class="guest-name-text">${guest.guestName}</div>
+                                <label class="guest-status">
+                                    <input type="checkbox" id="status_${guest.guestId}" ${isSent ? 'checked' : ''} onchange="toggleStatus('${guest.guestId}', this, ${i})">
+                                    Đã gửi
+                                </label>
+                            </div>
+                            <div class="guest-small-actions">
+                                <button class="btn-edit-guest" onclick="editGuestName('${guest.guestId}', ${i})" title="Sửa tên khách">✏️ Sửa</button>
+                                <button class="btn-delete-guest" onclick="deleteGuest('${guest.guestId}', ${i})" title="Xóa khách này">❌ Xóa</button>
+                            </div>
+                        </div>
+                        <input type="text" class="guest-note" id="note_${guest.guestId}" placeholder="Thêm ghi chú (Ví dụ: Bạn đại học...)" value="${guest.note || ''}">
+                        <div class="guest-actions">
+                            <button class="btn-save-note" onclick="saveNote('${guest.guestId}', ${i})">Lưu Ghi Chú</button>
+                            <button class="btn-send-guest" onclick="sendSpecificGuest('${guest.guestName}', '${guest.guestId}', ${i})">📤 Gửi Thiệp Này</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('pageInfo').innerText = `${currentPage} / ${totalPages}`;
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages;
+        }
+
+        function changePage(step) { currentPage += step; renderGuest(); }
+
+        function toggleStatus(guestId, checkbox, index) {
+            const newStatus = checkbox.checked ? 1 : 0;
+            guestList[index].status = newStatus;
+            updateGuestData(guestId, null, newStatus);
+        }
+
+        function getFileName(nameInput) {
+            const guestName = nameInput || textInput.value.trim();
+            if (guestName) {
+                const cleanName = guestName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "_");
+                return `thiep_moi_${cleanName}.png`;
+            }
+            return "thiep_moi.png";
+        }
+
+        function save() {
+            const a = document.createElement("a"); a.href = canvas.toDataURL("image/png");
+            a.download = getFileName(); a.click();
+        }
+
+        async function share() {
+            if (!navigator.share) return alert("Vui lòng bấm vào nút 3 chấm trên cùng bên phải và chọn 'Mở bằng trình duyệt' để gửi.");
+            try {
+                const blob = await (await fetch(canvas.toDataURL("image/png"))).blob();
+                const file = new File([blob], getFileName(), { type: "image/png" });
+                await navigator.share({ files: [file] });
+            } catch (e) {}
+        }
+
+        async function sendSpecificGuest(guestName, guestId, index) {
+            textInput.value = guestName;
+            draw();
+            await share();
+            const checkbox = document.getElementById('status_' + guestId);
+            if(!checkbox.checked) {
+                checkbox.checked = true;
+                toggleStatus(guestId, checkbox, index);
+            }
+        }
+    </script>
+</body>
+</html>
