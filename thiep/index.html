@@ -433,10 +433,20 @@
             } catch (e) {}
         }
 
-        async function sendSpecificGuest(guestName, guestId, index) {
+       async function sendSpecificGuest(guestName, guestId, index) {
+            // 1. Điền tên khách vào ô
             textInput.value = guestName;
+            
+            // 2. Ra lệnh vẽ chữ lên ảnh
             draw();
+            
+            // 3. MẸO CHỐNG LỖI: Đợi 100 mili-giây để trình duyệt kịp "in" chữ lên ảnh rồi mới xuất file
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            // 4. Khởi động tính năng chia sẻ
             await share();
+            
+            // 5. Tự động đánh dấu tích xanh "Đã gửi"
             const checkbox = document.getElementById('status_' + guestId);
             if(!checkbox.checked) {
                 checkbox.checked = true;
